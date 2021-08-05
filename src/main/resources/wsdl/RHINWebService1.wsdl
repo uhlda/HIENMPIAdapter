@@ -1,0 +1,565 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="RHINWebService" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsp:Policy wsu:Id="WSHttpBinding_IRHINWebService_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <wsoma:OptimizedMimeSerialization xmlns:wsoma="http://schemas.xmlsoap.org/ws/2004/09/policy/optimizedmimeserialization" />
+        <sp:TransportBinding xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <wsp:Policy>
+            <sp:TransportToken>
+              <wsp:Policy>
+                <sp:HttpsToken RequireClientCertificate="false" />
+              </wsp:Policy>
+            </sp:TransportToken>
+            <sp:AlgorithmSuite>
+              <wsp:Policy>
+                <sp:Basic256 />
+              </wsp:Policy>
+            </sp:AlgorithmSuite>
+            <sp:Layout>
+              <wsp:Policy>
+                <sp:Strict />
+              </wsp:Policy>
+            </sp:Layout>
+          </wsp:Policy>
+        </sp:TransportBinding>
+        <wsaw:UsingAddressing />
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import schemaLocation="https://rhinservicestaging.azurewebsites.net/RHINWebService.svc?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="https://rhinservicestaging.azurewebsites.net/RHINWebService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="https://rhinservicestaging.azurewebsites.net/RHINWebService.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/HIELibrary.Entities" />
+      <xsd:import schemaLocation="https://rhinservicestaging.azurewebsites.net/RHINWebService.svc?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IRHINWebService_AuthenticateGatewayRepository_InputMessage">
+    <wsdl:part name="parameters" element="tns:AuthenticateGatewayRepository" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_AuthenticateGatewayRepository_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AuthenticateGatewayRepositoryResponse" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_AuthenticateUser_InputMessage">
+    <wsdl:part name="parameters" element="tns:AuthenticateUser" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_AuthenticateUser_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AuthenticateUserResponse" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_DesktopDeleteUserAction_InputMessage">
+    <wsdl:part name="parameters" element="tns:DesktopDeleteUserAction" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_DesktopDeleteUserAction_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DesktopDeleteUserActionResponse" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_DesktopGetUserActions_InputMessage">
+    <wsdl:part name="parameters" element="tns:DesktopGetUserActions" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_DesktopGetUserActions_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DesktopGetUserActionsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_DesktopDownloadRHINFile_InputMessage">
+    <wsdl:part name="parameters" element="tns:DesktopDownloadRHINFile" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_DesktopDownloadRHINFile_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DesktopDownloadRHINFileResponse" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_DesktopUploadFile_InputMessage">
+    <wsdl:part name="parameters" element="tns:DesktopUploadFile" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_DesktopUploadFile_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DesktopUploadFileResponse" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_DesktopUpdateUploadFileStatus_InputMessage">
+    <wsdl:part name="parameters" element="tns:DesktopUpdateUploadFileStatus" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_DesktopUpdateUploadFileStatus_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DesktopUpdateUploadFileStatusResponse" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_DesktopSaveUserSettings_InputMessage">
+    <wsdl:part name="parameters" element="tns:DesktopSaveUserSettings" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_DesktopSaveUserSettings_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DesktopSaveUserSettingsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_GatewayGet_InputMessage">
+    <wsdl:part name="parameters" element="tns:GatewayGet" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_GatewayGet_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GatewayGetResponse" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_GatewaySaveClient_InputMessage">
+    <wsdl:part name="parameters" element="tns:GatewaySaveClient" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_GatewaySaveClient_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GatewaySaveClientResponse" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_GatewayDowloadList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GatewayDowloadList" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_GatewayDowloadList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GatewayDowloadListResponse" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_GatewayDownloadRHINFile_InputMessage">
+    <wsdl:part name="parameters" element="tns:GatewayDownloadRHINFile" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_GatewayDownloadRHINFile_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GatewayDownloadRHINFileResponse" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_GatewayDownloadUpdateRHINFileStatus_InputMessage">
+    <wsdl:part name="parameters" element="tns:GatewayDownloadUpdateRHINFileStatus" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_GatewayDownloadUpdateRHINFileStatus_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GatewayDownloadUpdateRHINFileStatusResponse" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_GatewayUploadHL7Message_InputMessage">
+    <wsdl:part name="parameters" element="tns:GatewayUploadHL7Message" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_GatewayUploadHL7Message_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GatewayUploadHL7MessageResponse" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_GatewayUploadFile_InputMessage">
+    <wsdl:part name="parameters" element="tns:GatewayUploadFile" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_GatewayUploadFile_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GatewayUploadFileResponse" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_GatewayUploadFileGetStatus_InputMessage">
+    <wsdl:part name="parameters" element="tns:GatewayUploadFileGetStatus" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_GatewayUploadFileGetStatus_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GatewayUploadFileGetStatusResponse" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_GatewayUploadFileUpdateStatus_InputMessage">
+    <wsdl:part name="parameters" element="tns:GatewayUploadFileUpdateStatus" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_GatewayUploadFileUpdateStatus_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GatewayUploadFileUpdateStatusResponse" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_GetUser_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetUser" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_GetUser_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetUserResponse" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_LogMessage_InputMessage">
+    <wsdl:part name="parameters" element="tns:LogMessage" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_LogMessage_OutputMessage">
+    <wsdl:part name="parameters" element="tns:LogMessageResponse" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_LogoutUser_InputMessage">
+    <wsdl:part name="parameters" element="tns:LogoutUser" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_LogoutUser_OutputMessage">
+    <wsdl:part name="parameters" element="tns:LogoutUserResponse" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_GetCONNECTPatient_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetCONNECTPatient" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_GetCONNECTPatient_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetCONNECTPatientResponse" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_GetCONNECTClinicalDocumentList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetCONNECTClinicalDocumentList" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_GetCONNECTClinicalDocumentList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetCONNECTClinicalDocumentListResponse" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_GetCONNECTCCDADocument_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetCONNECTCCDADocument" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_GetCONNECTCCDADocument_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetCONNECTCCDADocumentResponse" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_PingGateway_InputMessage">
+    <wsdl:part name="parameters" element="tns:PingGateway" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_PingGateway_OutputMessage">
+    <wsdl:part name="parameters" element="tns:PingGatewayResponse" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_AddOrganizationReferralStatus_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddOrganizationReferralStatus" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_AddOrganizationReferralStatus_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddOrganizationReferralStatusResponse" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_DeleteReferralOrganizationStatus_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteReferralOrganizationStatus" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_DeleteReferralOrganizationStatus_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteReferralOrganizationStatusResponse" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_UpdateTrackingReferralStatus_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateTrackingReferralStatus" />
+  </wsdl:message>
+  <wsdl:message name="IRHINWebService_UpdateTrackingReferralStatus_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateTrackingReferralStatusResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IRHINWebService">
+    <wsdl:operation name="AuthenticateGatewayRepository">
+      <wsdl:input wsaw:Action="http://tempuri.org/IRHINWebService/AuthenticateGatewayRepository" message="tns:IRHINWebService_AuthenticateGatewayRepository_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IRHINWebService/AuthenticateGatewayRepositoryResponse" message="tns:IRHINWebService_AuthenticateGatewayRepository_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AuthenticateUser">
+      <wsdl:input wsaw:Action="http://tempuri.org/IRHINWebService/AuthenticateUser" message="tns:IRHINWebService_AuthenticateUser_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IRHINWebService/AuthenticateUserResponse" message="tns:IRHINWebService_AuthenticateUser_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DesktopDeleteUserAction">
+      <wsdl:input wsaw:Action="http://tempuri.org/IRHINWebService/DesktopDeleteUserAction" message="tns:IRHINWebService_DesktopDeleteUserAction_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IRHINWebService/DesktopDeleteUserActionResponse" message="tns:IRHINWebService_DesktopDeleteUserAction_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DesktopGetUserActions">
+      <wsdl:input wsaw:Action="http://tempuri.org/IRHINWebService/DesktopGetUserActions" message="tns:IRHINWebService_DesktopGetUserActions_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IRHINWebService/DesktopGetUserActionsResponse" message="tns:IRHINWebService_DesktopGetUserActions_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DesktopDownloadRHINFile">
+      <wsdl:input wsaw:Action="http://tempuri.org/IRHINWebService/DesktopDownloadRHINFile" message="tns:IRHINWebService_DesktopDownloadRHINFile_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IRHINWebService/DesktopDownloadRHINFileResponse" message="tns:IRHINWebService_DesktopDownloadRHINFile_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DesktopUploadFile">
+      <wsdl:input wsaw:Action="http://tempuri.org/IRHINWebService/DesktopUploadFile" message="tns:IRHINWebService_DesktopUploadFile_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IRHINWebService/DesktopUploadFileResponse" message="tns:IRHINWebService_DesktopUploadFile_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DesktopUpdateUploadFileStatus">
+      <wsdl:input wsaw:Action="http://tempuri.org/IRHINWebService/DesktopUpdateUploadFileStatus" message="tns:IRHINWebService_DesktopUpdateUploadFileStatus_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IRHINWebService/DesktopUpdateUploadFileStatusResponse" message="tns:IRHINWebService_DesktopUpdateUploadFileStatus_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DesktopSaveUserSettings">
+      <wsdl:input wsaw:Action="http://tempuri.org/IRHINWebService/DesktopSaveUserSettings" message="tns:IRHINWebService_DesktopSaveUserSettings_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IRHINWebService/DesktopSaveUserSettingsResponse" message="tns:IRHINWebService_DesktopSaveUserSettings_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GatewayGet">
+      <wsdl:input wsaw:Action="http://tempuri.org/IRHINWebService/GatewayGet" message="tns:IRHINWebService_GatewayGet_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IRHINWebService/GatewayGetResponse" message="tns:IRHINWebService_GatewayGet_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GatewaySaveClient">
+      <wsdl:input wsaw:Action="http://tempuri.org/IRHINWebService/GatewaySaveClient" message="tns:IRHINWebService_GatewaySaveClient_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IRHINWebService/GatewaySaveClientResponse" message="tns:IRHINWebService_GatewaySaveClient_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GatewayDowloadList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IRHINWebService/GatewayDowloadList" message="tns:IRHINWebService_GatewayDowloadList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IRHINWebService/GatewayDowloadListResponse" message="tns:IRHINWebService_GatewayDowloadList_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GatewayDownloadRHINFile">
+      <wsdl:input wsaw:Action="http://tempuri.org/IRHINWebService/GatewayDownloadRHINFile" message="tns:IRHINWebService_GatewayDownloadRHINFile_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IRHINWebService/GatewayDownloadRHINFileResponse" message="tns:IRHINWebService_GatewayDownloadRHINFile_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GatewayDownloadUpdateRHINFileStatus">
+      <wsdl:input wsaw:Action="http://tempuri.org/IRHINWebService/GatewayDownloadUpdateRHINFileStatus" message="tns:IRHINWebService_GatewayDownloadUpdateRHINFileStatus_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IRHINWebService/GatewayDownloadUpdateRHINFileStatusResponse" message="tns:IRHINWebService_GatewayDownloadUpdateRHINFileStatus_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GatewayUploadHL7Message">
+      <wsdl:input wsaw:Action="http://tempuri.org/IRHINWebService/GatewayUploadHL7Message" message="tns:IRHINWebService_GatewayUploadHL7Message_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IRHINWebService/GatewayUploadHL7MessageResponse" message="tns:IRHINWebService_GatewayUploadHL7Message_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GatewayUploadFile">
+      <wsdl:input wsaw:Action="http://tempuri.org/IRHINWebService/GatewayUploadFile" message="tns:IRHINWebService_GatewayUploadFile_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IRHINWebService/GatewayUploadFileResponse" message="tns:IRHINWebService_GatewayUploadFile_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GatewayUploadFileGetStatus">
+      <wsdl:input wsaw:Action="http://tempuri.org/IRHINWebService/GatewayUploadFileGetStatus" message="tns:IRHINWebService_GatewayUploadFileGetStatus_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IRHINWebService/GatewayUploadFileGetStatusResponse" message="tns:IRHINWebService_GatewayUploadFileGetStatus_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GatewayUploadFileUpdateStatus">
+      <wsdl:input wsaw:Action="http://tempuri.org/IRHINWebService/GatewayUploadFileUpdateStatus" message="tns:IRHINWebService_GatewayUploadFileUpdateStatus_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IRHINWebService/GatewayUploadFileUpdateStatusResponse" message="tns:IRHINWebService_GatewayUploadFileUpdateStatus_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetUser">
+      <wsdl:input wsaw:Action="http://tempuri.org/IRHINWebService/GetUser" message="tns:IRHINWebService_GetUser_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IRHINWebService/GetUserResponse" message="tns:IRHINWebService_GetUser_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="LogMessage">
+      <wsdl:input wsaw:Action="http://tempuri.org/IRHINWebService/LogMessage" message="tns:IRHINWebService_LogMessage_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IRHINWebService/LogMessageResponse" message="tns:IRHINWebService_LogMessage_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="LogoutUser">
+      <wsdl:input wsaw:Action="http://tempuri.org/IRHINWebService/LogoutUser" message="tns:IRHINWebService_LogoutUser_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IRHINWebService/LogoutUserResponse" message="tns:IRHINWebService_LogoutUser_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCONNECTPatient">
+      <wsdl:input wsaw:Action="http://tempuri.org/IRHINWebService/GetCONNECTPatient" message="tns:IRHINWebService_GetCONNECTPatient_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IRHINWebService/GetCONNECTPatientResponse" message="tns:IRHINWebService_GetCONNECTPatient_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCONNECTClinicalDocumentList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IRHINWebService/GetCONNECTClinicalDocumentList" message="tns:IRHINWebService_GetCONNECTClinicalDocumentList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IRHINWebService/GetCONNECTClinicalDocumentListResponse" message="tns:IRHINWebService_GetCONNECTClinicalDocumentList_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCONNECTCCDADocument">
+      <wsdl:input wsaw:Action="http://tempuri.org/IRHINWebService/GetCONNECTCCDADocument" message="tns:IRHINWebService_GetCONNECTCCDADocument_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IRHINWebService/GetCONNECTCCDADocumentResponse" message="tns:IRHINWebService_GetCONNECTCCDADocument_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="PingGateway">
+      <wsdl:input wsaw:Action="http://tempuri.org/IRHINWebService/PingGateway" message="tns:IRHINWebService_PingGateway_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IRHINWebService/PingGatewayResponse" message="tns:IRHINWebService_PingGateway_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddOrganizationReferralStatus">
+      <wsdl:input wsaw:Action="http://tempuri.org/IRHINWebService/AddOrganizationReferralStatus" message="tns:IRHINWebService_AddOrganizationReferralStatus_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IRHINWebService/AddOrganizationReferralStatusResponse" message="tns:IRHINWebService_AddOrganizationReferralStatus_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteReferralOrganizationStatus">
+      <wsdl:input wsaw:Action="http://tempuri.org/IRHINWebService/DeleteReferralOrganizationStatus" message="tns:IRHINWebService_DeleteReferralOrganizationStatus_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IRHINWebService/DeleteReferralOrganizationStatusResponse" message="tns:IRHINWebService_DeleteReferralOrganizationStatus_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateTrackingReferralStatus">
+      <wsdl:input wsaw:Action="http://tempuri.org/IRHINWebService/UpdateTrackingReferralStatus" message="tns:IRHINWebService_UpdateTrackingReferralStatus_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IRHINWebService/UpdateTrackingReferralStatusResponse" message="tns:IRHINWebService_UpdateTrackingReferralStatus_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="WSHttpBinding_IRHINWebService" type="tns:IRHINWebService">
+    <wsp:PolicyReference URI="#WSHttpBinding_IRHINWebService_policy" />
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="AuthenticateGatewayRepository">
+      <soap12:operation soapAction="http://tempuri.org/IRHINWebService/AuthenticateGatewayRepository" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AuthenticateUser">
+      <soap12:operation soapAction="http://tempuri.org/IRHINWebService/AuthenticateUser" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DesktopDeleteUserAction">
+      <soap12:operation soapAction="http://tempuri.org/IRHINWebService/DesktopDeleteUserAction" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DesktopGetUserActions">
+      <soap12:operation soapAction="http://tempuri.org/IRHINWebService/DesktopGetUserActions" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DesktopDownloadRHINFile">
+      <soap12:operation soapAction="http://tempuri.org/IRHINWebService/DesktopDownloadRHINFile" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DesktopUploadFile">
+      <soap12:operation soapAction="http://tempuri.org/IRHINWebService/DesktopUploadFile" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DesktopUpdateUploadFileStatus">
+      <soap12:operation soapAction="http://tempuri.org/IRHINWebService/DesktopUpdateUploadFileStatus" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DesktopSaveUserSettings">
+      <soap12:operation soapAction="http://tempuri.org/IRHINWebService/DesktopSaveUserSettings" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GatewayGet">
+      <soap12:operation soapAction="http://tempuri.org/IRHINWebService/GatewayGet" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GatewaySaveClient">
+      <soap12:operation soapAction="http://tempuri.org/IRHINWebService/GatewaySaveClient" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GatewayDowloadList">
+      <soap12:operation soapAction="http://tempuri.org/IRHINWebService/GatewayDowloadList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GatewayDownloadRHINFile">
+      <soap12:operation soapAction="http://tempuri.org/IRHINWebService/GatewayDownloadRHINFile" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GatewayDownloadUpdateRHINFileStatus">
+      <soap12:operation soapAction="http://tempuri.org/IRHINWebService/GatewayDownloadUpdateRHINFileStatus" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GatewayUploadHL7Message">
+      <soap12:operation soapAction="http://tempuri.org/IRHINWebService/GatewayUploadHL7Message" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GatewayUploadFile">
+      <soap12:operation soapAction="http://tempuri.org/IRHINWebService/GatewayUploadFile" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GatewayUploadFileGetStatus">
+      <soap12:operation soapAction="http://tempuri.org/IRHINWebService/GatewayUploadFileGetStatus" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GatewayUploadFileUpdateStatus">
+      <soap12:operation soapAction="http://tempuri.org/IRHINWebService/GatewayUploadFileUpdateStatus" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetUser">
+      <soap12:operation soapAction="http://tempuri.org/IRHINWebService/GetUser" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="LogMessage">
+      <soap12:operation soapAction="http://tempuri.org/IRHINWebService/LogMessage" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="LogoutUser">
+      <soap12:operation soapAction="http://tempuri.org/IRHINWebService/LogoutUser" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCONNECTPatient">
+      <soap12:operation soapAction="http://tempuri.org/IRHINWebService/GetCONNECTPatient" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCONNECTClinicalDocumentList">
+      <soap12:operation soapAction="http://tempuri.org/IRHINWebService/GetCONNECTClinicalDocumentList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCONNECTCCDADocument">
+      <soap12:operation soapAction="http://tempuri.org/IRHINWebService/GetCONNECTCCDADocument" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PingGateway">
+      <soap12:operation soapAction="http://tempuri.org/IRHINWebService/PingGateway" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddOrganizationReferralStatus">
+      <soap12:operation soapAction="http://tempuri.org/IRHINWebService/AddOrganizationReferralStatus" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteReferralOrganizationStatus">
+      <soap12:operation soapAction="http://tempuri.org/IRHINWebService/DeleteReferralOrganizationStatus" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateTrackingReferralStatus">
+      <soap12:operation soapAction="http://tempuri.org/IRHINWebService/UpdateTrackingReferralStatus" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="RHINWebService">
+    <wsdl:port name="WSHttpBinding_IRHINWebService" binding="tns:WSHttpBinding_IRHINWebService">
+      <soap12:address location="https://rhinservicestaging.azurewebsites.net/RHINWebService.svc" />
+      <wsa10:EndpointReference>
+        <wsa10:Address>https://rhinservicestaging.azurewebsites.net/RHINWebService.svc</wsa10:Address>
+      </wsa10:EndpointReference>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
+    <system systemId="file:/C:/work/Ruvos/RHINWebService1.wsdl" uri="wsdl/RHINWebService1.wsdl"/>
+    <system systemId="https://rhinservicestaging.azurewebsites.net/RHINWebService.svc?xsd=xsd0" uri="wsdl/rhinservicestaging.azurewebsites.net/RHINWebService.svc.xsd_xsd0.xsd"/>
+    <system systemId="https://rhinservicestaging.azurewebsites.net/RHINWebService.svc?xsd=xsd1" uri="wsdl/rhinservicestaging.azurewebsites.net/RHINWebService.svc.xsd_xsd1.xsd"/>
+    <system systemId="https://rhinservicestaging.azurewebsites.net/RHINWebService.svc?xsd=xsd2" uri="wsdl/rhinservicestaging.azurewebsites.net/RHINWebService.svc.xsd_xsd2.xsd"/>
+    <system systemId="https://rhinservicestaging.azurewebsites.net/RHINWebService.svc?xsd=xsd3" uri="wsdl/rhinservicestaging.azurewebsites.net/RHINWebService.svc.xsd_xsd3.xsd"/>
+</catalog>
