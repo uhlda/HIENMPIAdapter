@@ -21,6 +21,7 @@ public class Demo {
 		patientInfo.setLname("jones");
         patientInfo.setFname("curtis");
         patientInfo.setGender("M");
+        patientInfo.setSSN("265662107");
         patientInfo.setDob("1944-06-23");
         
         PatientEntity patientList = client.sendData(patientInfo);

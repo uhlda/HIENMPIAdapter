@@ -77,11 +77,20 @@ public class HIENPatientDiscoverySoapClient {
 	}
 	
 	public PatientEntity sendData(PatientInfo patientInfo) {		
-		XMLGregorianCalendar dob;
+		XMLGregorianCalendar dob = null;
 		PatientEntity response = null;
         try {
-            dob = DatatypeFactory.newInstance().newXMLGregorianCalendar(patientInfo.getDob());
-            response = pdPort.getCONNECTPatient(CENTRALIS_AUTHENTICATION_TOKEN, patientInfo.getLname(), patientInfo.getFname(), patientInfo.getGender(), dob, null);
+            if (patientInfo.getDob() != null)
+            {
+                dob = DatatypeFactory.newInstance().newXMLGregorianCalendar(patientInfo.getDob());
+            }
+            response = pdPort.getCONNECTPatient(
+                    CENTRALIS_AUTHENTICATION_TOKEN, 
+                    patientInfo.getLname(), 
+                    patientInfo.getFname(), 
+                    patientInfo.getGender(), 
+                    dob, 
+                    patientInfo.getSSN());
         } catch (DatatypeConfigurationException e) {
             Logger.getLogger(HIENPatientDiscoverySoapClient.class.getName()).log(Level.SEVERE, null, e);
         } catch (Exception e) {

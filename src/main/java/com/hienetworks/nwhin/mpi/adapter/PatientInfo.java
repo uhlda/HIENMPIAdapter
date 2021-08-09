@@ -17,6 +17,7 @@ public class PatientInfo {
 	private String dob;
 	private String gender;
 	private Address address;
+    private String ssn;
 
 	public String getFname() {
 		return fname;
@@ -57,5 +58,14 @@ public class PatientInfo {
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
-
+        
+    public String getSSN()
+    {
+        return this.ssn;
+    }
+    
+    public void setSSN(String ssn)
+    {
+        this.ssn = ssn;
+    }    
 }
