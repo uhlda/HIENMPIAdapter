@@ -15,12 +15,11 @@ import org.tempuri.RHINWebService;
 import gov.hhs.fha.nhinc.nhinclib.NhincConstants;
 import gov.hhs.fha.nhinc.properties.PropertyAccessException;
 import gov.hhs.fha.nhinc.properties.PropertyAccessor;
+
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.PostConstruct;
 import javax.xml.datatype.DatatypeConfigurationException;
-import org.springframework.beans.factory.annotation.Value;
 
 public class HIENPatientDiscoverySoapClient {
     private static IRHINWebService pdPort;
@@ -30,6 +29,8 @@ public class HIENPatientDiscoverySoapClient {
 	private PropertyAccessor propertyAccessor = PropertyAccessor.getInstance();	
 	private final static int CONNECTION_TIMEOUT = 60000;
     private final static String CENTRALIS_AUTHENTICATION_TOKEN = "9DB9082B-68F3-4A7B-8B11-1BA0649945DE";
+    
+    public String AuthToken = "";
     
 	private HIENPatientDiscoverySoapClient() {
 		try {
@@ -53,11 +54,22 @@ public class HIENPatientDiscoverySoapClient {
     // TODO: Determine whether we really need to use the below checked PostConstruct attribute.
     
     // @PostConstruct
-	public void init() throws IOException, PropertyAccessException {
+	public void init() throws IOException, PropertyAccessException, MissingURLException {
         
-        // Get RESTful RHINWebService URL
+        // Get RESTful RHINWebService URL and Centralis application authentication token
 		String urlString = propertyAccessor.getProperty(NhincConstants.GATEWAY_PROPERTY_FILE, "RHINWebServiceUrl");    
+        if (com.google.common.base.Strings.isNullOrEmpty(urlString))
+        {
+            throw new MissingURLException("Centralis RHIN Web Service URL Empty or Not Found");
+        }
         
+        // Try getting Centralis app/session authentication token from properties file, if not use hard coded literal
+        AuthToken = propertyAccessor.getProperty(NhincConstants.GATEWAY_PROPERTY_FILE, "CentralisAuthenticationToken");            
+        if (com.google.common.base.Strings.isNullOrEmpty(AuthToken))
+        {
+            AuthToken = CENTRALIS_AUTHENTICATION_TOKEN;
+        }
+    
         // Create RHINWebService service from RHINWebService1 service section
 		RHINWebService pdService = new RHINWebService(pdWsdl.getURL());
         
@@ -85,7 +97,7 @@ public class HIENPatientDiscoverySoapClient {
                 dob = DatatypeFactory.newInstance().newXMLGregorianCalendar(patientInfo.getDob());
             }
             response = pdPort.getCONNECTPatient(
-                    CENTRALIS_AUTHENTICATION_TOKEN, 
+                    AuthToken, 
                     patientInfo.getLname(), 
                     patientInfo.getFname(), 
                     patientInfo.getGender(), 
@@ -98,5 +110,11 @@ public class HIENPatientDiscoverySoapClient {
         }
 
         return response;
+    }
+       
+    public class MissingURLException extends Exception {
+        public MissingURLException(String message) {
+            super(message);
+        }
     }
 }

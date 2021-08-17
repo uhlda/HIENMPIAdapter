@@ -33,7 +33,6 @@
       <xsd:import schemaLocation="https://rhinservicestaging.azurewebsites.net/RHINWebService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
       <xsd:import schemaLocation="https://rhinservicestaging.azurewebsites.net/RHINWebService.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/HIELibrary.Entities" />
       <xsd:import schemaLocation="https://rhinservicestaging.azurewebsites.net/RHINWebService.svc?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
-      <xsd:import schemaLocation="https://rhinservicestaging.azurewebsites.net/RHINWebService.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/HIELibrary.Entities.CDA" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="IRHINWebService_AuthenticateGatewayRepository_InputMessage">

@@ -235,11 +235,11 @@
                             <wsdlFiles>
                                 <wsdlFile>RHINWebService1.wsdl</wsdlFile>
                             </wsdlFiles>
-                            <packageName></packageName>
+                            <packageName>com.hienetworks.nwhin.mpi.adapter</packageName>
                             <vmArgs>
                                 <vmArg>-Djavax.xml.accessExternalSchema=all</vmArg>
                             </vmArgs>
-                            <wsdlLocation>${basedir}/src/main/resources/wsdl/RHINWebService1.wsdl</wsdlLocation>
+                            <wsdlLocation>file:/C:/HIEGateway/Adapters-Source/HIEN/SCHEMA/RHINWebService1.wsdl</wsdlLocation>
                             <staleFile>${project.build.directory}/jaxws/stale/RHINWebService1.stale</staleFile>
                         </configuration>
                         <id>wsimport-generate-RHINWebService1</id>
