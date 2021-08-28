@@ -1,6 +1,6 @@
 package com.hienetworks.nwhin.mpi.adapter;
 
-import org.datacontract.schemas._2004._07.hielibrary.PatientEntity;
+//import org.datacontract.schemas._2004._07.hielibrary.PatientEntity;
 
 public class Demo {
 
@@ -16,10 +16,10 @@ public class Demo {
             patientInfo.setSSN("265662107");
             patientInfo.setDob("1944-06-23");
 
-            PatientEntity patientList = client.sendData(patientInfo);
+            PatientRMPIEntity patientList = client.sendData(patientInfo);
 
             HIENPatientDiscoverySoapClient client2 =  HIENPatientDiscoverySoapClient.getInstance();
-            PatientEntity patientList2 = client2.sendData(patientInfo);
+            PatientRMPIEntity patientList2 = client2.sendData(patientInfo);
 
             System.out.println("END");
         }
@@ -27,5 +27,5 @@ public class Demo {
         {
             System.out.println("ERROR: " + e.getMessage());
         }
-	}
+    }
 }

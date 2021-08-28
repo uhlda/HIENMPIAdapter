@@ -14,7 +14,7 @@ import javax.xml.ws.BindingType;
 import javax.xml.ws.WebServiceContext;
 
 import org.apache.log4j.Logger;
-import org.datacontract.schemas._2004._07.hielibrary.PatientEntity;
+//import org.datacontract.schemas._2004._07.hielibrary.PatientEntity;
 import org.hl7.v3.PRPAIN201305UV02;
 import org.hl7.v3.PRPAIN201305UV02QUQIMT021001UV01ControlActProcess;
 import org.hl7.v3.PRPAIN201306UV02;
@@ -80,25 +80,31 @@ public class HIENMPIAdapter implements gov.hhs.fha.nhinc.adaptercomponentmpi.Ada
                 //send request to RHINWebService api
                 
                 logger.info("PatientDiscovery SOAP call.......");
+                
+                PatientRMPIEntity patientList = null;
                 HIENPatientDiscoverySoapClient client = HIENPatientDiscoverySoapClient.getInstance();
-                PatientEntity patientList = client.sendData(patientInfo);
-
+                if (client != null) {
+                    patientList = client.sendData(patientInfo);
+                } else {
+                    throw new PatientDiscoverySoapClientException("Null Client from getInstance!");
+                }
+                
                 logger.info("Response msg :" + patientList);
                 if (patientList != null) {
                     try {
                     	final Patients patList = new Patients();
                     	if(null == patientList.getError()) {
-                    		Patient p = new Patient();
-                    		//name
-                    		PersonName pName = new PersonName();
-                    		pName.setFirstName(patientList.getX003CFirstNameX003EKBackingField());
-                    		pName.setFirstName(patientList.getX003CFirstNameX003EKBackingField());
+                            Patient p = new Patient();
+                            //name
+                            PersonName pName = new PersonName();
+                            pName.setFirstName(patientList.getX003CFirstNameX003EKBackingField());
+                            pName.setFirstName(patientList.getX003CFirstNameX003EKBackingField());
                             pName.setLastName(patientList.getX003CLastNameX003EKBackingField());
                             pName.setMiddleName(patientList.getX003CMiddleNameX003EKBackingField());
                             PersonNames pNameList = new PersonNames();
                             pNameList.add(pName);
                             p.setNames(pNameList);
-                          //address
+                            //address
                             gov.hhs.fha.nhinc.mpilib.Address pAddr = new gov.hhs.fha.nhinc.mpilib.Address();
                             pAddr.setStreet1(patientList.getX003CAddress1X003EKBackingField());
                             pAddr.setStreet2(patientList.getX003CAddress2X003EKBackingField());
@@ -110,21 +116,18 @@ public class HIENMPIAdapter implements gov.hhs.fha.nhinc.adaptercomponentmpi.Ada
                             p.setGender(patientList.getX003CGenderX003EKBackingField());
                             LocalDateTime parse = LocalDateTime.parse((patientList.getX003CDateOfBirthX003EKBackingField().toString()));
                             p.setDateOfBirth(parse.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
-                          //PhoneNumber ph = new PhoneNumber(patientEntity.get);
+                            //PhoneNumber ph = new PhoneNumber(patientEntity.get);
                             //PhoneNumbers phoneNumbers = new PhoneNumbers();
                             //phoneNumbers.add(ph);
                             p.setAddresses(pAddrList);
                             p.setSSN(patientList.getX003CSSNX003EKBackingField());
-                    		patList.add(p);
-                            
+                            patList.add(p);                            
                     	}
                     	
-                      oResponse = HL7Parser201306.buildMessageFromMpiPatient(patList, oPRPAIN201305UV02);
-                        
+                      oResponse = HL7Parser201306.buildMessageFromMpiPatient(patList, oPRPAIN201305UV02);                        
 
                     } catch (Exception e) {
                         logger.error(e);
-
                     }
                 } else {
                     logger.info("no content from womba patientDiscovery api");
@@ -135,7 +138,13 @@ public class HIENMPIAdapter implements gov.hhs.fha.nhinc.adaptercomponentmpi.Ada
         } catch (Exception exp) {
             logger.error(exp);
         }
+        
         return oResponse;
     }
-
+    
+    public class PatientDiscoverySoapClientException extends Exception {
+        public PatientDiscoverySoapClientException(String message) {
+            super(message);
+        }
+    }
 }

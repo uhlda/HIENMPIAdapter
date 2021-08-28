@@ -18,6 +18,7 @@ public class PatientInfo {
 	private String gender;
 	private Address address;
     private String ssn;
+    private String repositoryOID;
 
 	public String getFname() {
 		return fname;
@@ -68,4 +69,14 @@ public class PatientInfo {
     {
         this.ssn = ssn;
     }    
+
+    public String getRepositoryOID()
+    {
+        return this.repositoryOID;
+    }
+    
+    public void setRepositoryOID(String ssn)
+    {
+        this.ssn = repositoryOID;
+    }            
 }
