@@ -25,6 +25,8 @@ import gov.hhs.fha.nhinc.mpi.adapter.component.hl7parsers.HL7Parser201305;
 import gov.hhs.fha.nhinc.mpi.adapter.component.hl7parsers.HL7Parser201306;
 import gov.hhs.fha.nhinc.mpilib.Address;
 import gov.hhs.fha.nhinc.mpilib.Addresses;
+import gov.hhs.fha.nhinc.mpilib.Identifier;
+import gov.hhs.fha.nhinc.mpilib.Identifiers;
 import gov.hhs.fha.nhinc.mpilib.Patient;
 import gov.hhs.fha.nhinc.mpilib.Patients;
 import gov.hhs.fha.nhinc.mpilib.PersonName;
@@ -89,13 +91,17 @@ public class HIENMPIAdapter implements gov.hhs.fha.nhinc.adaptercomponentmpi.Ada
                     throw new PatientDiscoverySoapClientException("Null Client from getInstance!");
                 }
                 
-                logger.info("Response msg :" + patientList);
+                logger.info("Response msg: " + patientList);
                 if (patientList != null) {
                     try {
-                    	final Patients patList = new Patients();
-                    	if(null == patientList.getError()) {
+                        
+                        logger.info("Received response");                                                
+                        final Patients patList = new Patients();
+                        if("".equals(patientList.getError().getValue())) {
+                            logger.info("Adding patient to list.......");
                             Patient p = new Patient();
                             //name
+                            logger.info("Processing Name.......");
                             PersonName pName = new PersonName();
                             pName.setFirstName(patientList.getX003CFirstNameX003EKBackingField());
                             pName.setFirstName(patientList.getX003CFirstNameX003EKBackingField());
@@ -104,27 +110,42 @@ public class HIENMPIAdapter implements gov.hhs.fha.nhinc.adaptercomponentmpi.Ada
                             PersonNames pNameList = new PersonNames();
                             pNameList.add(pName);
                             p.setNames(pNameList);
+
                             //address
+                            logger.info("Processing Address.......");
                             gov.hhs.fha.nhinc.mpilib.Address pAddr = new gov.hhs.fha.nhinc.mpilib.Address();
                             pAddr.setStreet1(patientList.getX003CAddress1X003EKBackingField());
                             pAddr.setStreet2(patientList.getX003CAddress2X003EKBackingField());
                             pAddr.setCity(patientList.getX003CCityX003EKBackingField());
                             pAddr.setState(patientList.getX003CStateCodeX003EKBackingField());
-                            pAddr.setZip(patientList.getX003CPostalCodeX003EKBackingField());
+                            pAddr.setZip(patientList.getX003CPostalCodeX003EKBackingField());        
                             Addresses pAddrList = new Addresses();
                             pAddrList.add(pAddr);
+                            p.setAddresses(pAddrList);        
+
+                            //identifiers
+                            logger.info("Processing Identifiers.......");        
+                            Identifier pPrimaryRMPINumber = new Identifier();
+                            pPrimaryRMPINumber.setId(patientList.x003CPrimaryRMPINumberX003EKBackingField);
+                            pPrimaryRMPINumber.setOrganizationId(HIENPatientDiscoverySoapClient.LocalHomeCommunityID);
+                            Identifiers pIdentities = new Identifiers();
+                            pIdentities.add(pPrimaryRMPINumber);
+                            p.setIdentifiers(pIdentities);
+
+                            //gender / SSN / DOB 'n such
+                            logger.info("Processing Odds and Ends.......");        
                             p.setGender(patientList.getX003CGenderX003EKBackingField());
                             LocalDateTime parse = LocalDateTime.parse((patientList.getX003CDateOfBirthX003EKBackingField().toString()));
                             p.setDateOfBirth(parse.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+                            p.setSSN(patientList.getX003CSSNX003EKBackingField());        
+
+                            //phone numbers - TBD, which should be sooner rather than later
                             //PhoneNumber ph = new PhoneNumber(patientEntity.get);
                             //PhoneNumbers phoneNumbers = new PhoneNumbers();
                             //phoneNumbers.add(ph);
-                            p.setAddresses(pAddrList);
-                            p.setSSN(patientList.getX003CSSNX003EKBackingField());
-                            patList.add(p);                            
-                    	}
-                    	
-                      oResponse = HL7Parser201306.buildMessageFromMpiPatient(patList, oPRPAIN201305UV02);                        
+                            patList.add(p);
+                        }
+                        oResponse = HL7Parser201306.buildMessageFromMpiPatient(patList, oPRPAIN201305UV02);                        
 
                     } catch (Exception e) {
                         logger.error(e);
@@ -139,8 +160,66 @@ public class HIENMPIAdapter implements gov.hhs.fha.nhinc.adaptercomponentmpi.Ada
             logger.error(exp);
         }
         
+        logger.info("Returning Response: " + oResponse.getAcceptAckCode());
         return oResponse;
     }
+
+//    private Patients ProcessPatientList(PatientRMPIEntity patientList) {
+//        final Patients patList = new Patients();
+//        if("".equals(patientList.getError().getValue())) {
+//            logger.info("Adding patient to list.......");
+//            Patient p = new Patient();
+//            ProcessPatient(patientList, p);
+//            patList.add(p);
+//        }
+//        return patList;
+//    }
+
+//    private void ProcessPatient(PatientRMPIEntity patientList, Patient p) {
+//        //name
+//        logger.info("Processing Name.......");
+//        PersonName pName = new PersonName();
+//        pName.setFirstName(patientList.getX003CFirstNameX003EKBackingField());
+//        pName.setFirstName(patientList.getX003CFirstNameX003EKBackingField());
+//        pName.setLastName(patientList.getX003CLastNameX003EKBackingField());
+//        pName.setMiddleName(patientList.getX003CMiddleNameX003EKBackingField());
+//        PersonNames pNameList = new PersonNames();
+//        pNameList.add(pName);
+//        p.setNames(pNameList);
+//        
+//        //address
+//        logger.info("Processing Address.......");
+//        gov.hhs.fha.nhinc.mpilib.Address pAddr = new gov.hhs.fha.nhinc.mpilib.Address();
+//        pAddr.setStreet1(patientList.getX003CAddress1X003EKBackingField());
+//        pAddr.setStreet2(patientList.getX003CAddress2X003EKBackingField());
+//        pAddr.setCity(patientList.getX003CCityX003EKBackingField());
+//        pAddr.setState(patientList.getX003CStateCodeX003EKBackingField());
+//        pAddr.setZip(patientList.getX003CPostalCodeX003EKBackingField());        
+//        Addresses pAddrList = new Addresses();
+//        pAddrList.add(pAddr);
+//        p.setAddresses(pAddrList);        
+//        
+//        //identifiers
+//        logger.info("Processing Identifiers.......");        
+//        Identifier pPrimaryRMPINumber = new Identifier();
+//        pPrimaryRMPINumber.setId(patientList.x003CPrimaryRMPINumberX003EKBackingField);
+//        pPrimaryRMPINumber.setOrganizationId(HIENPatientDiscoverySoapClient.LocalHomeCommunityID);
+//        Identifiers pIdentities = new Identifiers();
+//        pIdentities.add(pPrimaryRMPINumber);
+//        p.setIdentifiers(pIdentities);
+//
+//        //gender / SSN / DOB 'n such
+//        logger.info("Processing Odds and Ends.......");        
+//        p.setGender(patientList.getX003CGenderX003EKBackingField());
+//        LocalDateTime parse = LocalDateTime.parse((patientList.getX003CDateOfBirthX003EKBackingField().toString()));
+//        p.setDateOfBirth(parse.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+//        p.setSSN(patientList.getX003CSSNX003EKBackingField());        
+//        
+//        //phone numbers - TBD, which should be sooner rather than later
+//        //PhoneNumber ph = new PhoneNumber(patientEntity.get);
+//        //PhoneNumbers phoneNumbers = new PhoneNumbers();
+//        //phoneNumbers.add(ph);
+//    }
     
     public class PatientDiscoverySoapClientException extends Exception {
         public PatientDiscoverySoapClientException(String message) {

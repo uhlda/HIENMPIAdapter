@@ -17,8 +17,8 @@ public class PatientInfo {
 	private String dob;
 	private String gender;
 	private Address address;
-    private String ssn;
-    private String repositoryOID;
+        private String ssn;
+        private String repositoryOID;
 
 	public String getFname() {
 		return fname;

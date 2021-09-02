@@ -19,37 +19,39 @@ import java.util.logging.Logger;
 import javax.xml.datatype.DatatypeConfigurationException;
 
 public class HIENPatientDiscoverySoapClient {
-    private static IRHINWebService pdPort;
-    private static HIENPatientDiscoverySoapClient client = null;    
-	private final static Resource pdWsdl = new DefaultResourceLoader()
-			.getResource("classpath:wsdl/RHINWebService1.wsdl");
-	private PropertyAccessor propertyAccessor = PropertyAccessor.getInstance();	
-	private final static int CONNECTION_TIMEOUT = 60000;
+ 
+    public static String AuthToken = "";
+    public static String LocalHomeCommunityID = "";
+    
+    private final static Resource pdWsdl = new DefaultResourceLoader()
+                    .getResource("classpath:wsdl/RHINWebService1.wsdl");
+    private final static int CONNECTION_TIMEOUT = 60000;
     private final static String CENTRALIS_AUTHENTICATION_TOKEN = "9DB9082B-68F3-4A7B-8B11-1BA0649945DE";
     
-    public String AuthToken = "";
-    
-	private HIENPatientDiscoverySoapClient() {
-            try {
-                init();
-            } catch (IOException ei) {
-                Logger.getLogger(HIENPatientDiscoverySoapClient.class.getName()).log(Level.SEVERE, null, ei);
-            } catch (PropertyAccessException ep) {
-                Logger.getLogger(HIENPatientDiscoverySoapClient.class.getName()).log(Level.SEVERE, null, ep);
-            } catch (Exception e) {
-                Logger.getLogger(HIENPatientDiscoverySoapClient.class.getName()).log(Level.SEVERE, null, e);
-            }
-	}
-	
-        public static HIENPatientDiscoverySoapClient getInstance() {
-            if(null == client) {
-                client = new HIENPatientDiscoverySoapClient();
-            }
-            return client;
-	}
+    private static IRHINWebService pdPort;
+    private static HIENPatientDiscoverySoapClient client = null;    
+    private PropertyAccessor propertyAccessor = PropertyAccessor.getInstance();	
+     
+    private HIENPatientDiscoverySoapClient() {
+        try {
+            init();
+        } catch (IOException ei) {
+            Logger.getLogger(HIENPatientDiscoverySoapClient.class.getName()).log(Level.SEVERE, null, ei);
+        } catch (PropertyAccessException ep) {
+            Logger.getLogger(HIENPatientDiscoverySoapClient.class.getName()).log(Level.SEVERE, null, ep);
+        } catch (Exception e) {
+            Logger.getLogger(HIENPatientDiscoverySoapClient.class.getName()).log(Level.SEVERE, null, e);
+        }
+    }
+
+    public static HIENPatientDiscoverySoapClient getInstance() {
+        if(null == client) {
+            client = new HIENPatientDiscoverySoapClient();
+        }
+        return client;
+    }
     
     // TODO: Determine whether we really need to use the below checked PostConstruct attribute.
-    
     // @PostConstruct
     public void init() throws IOException, PropertyAccessException, MissingURLException {
 
@@ -57,8 +59,15 @@ public class HIENPatientDiscoverySoapClient {
         String urlString = propertyAccessor.getProperty(NhincConstants.GATEWAY_PROPERTY_FILE, "RHINWebServiceUrl");    
         if (com.google.common.base.Strings.isNullOrEmpty(urlString))
         {
-            throw new MissingURLException("Centralis RHIN Web Service URL Empty or Not Found");
+            throw new PropertyAccessException("Centralis RHIN Web Service URL Empty or Not Found");
         }
+        
+        // Get Centralis HCID
+        LocalHomeCommunityID = propertyAccessor.getProperty(NhincConstants.GATEWAY_PROPERTY_FILE, "localHomeCommunityId");    
+        if (com.google.common.base.Strings.isNullOrEmpty(LocalHomeCommunityID))
+        {
+            throw new PropertyAccessException("Centralis HCID Empty or Not Found");
+        }        
 
         // Try getting Centralis app/session authentication token from properties file, if not use hard coded literal
         AuthToken = propertyAccessor.getProperty(NhincConstants.GATEWAY_PROPERTY_FILE, "CentralisAuthenticationToken");            
