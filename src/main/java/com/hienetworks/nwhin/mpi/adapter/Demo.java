@@ -36,7 +36,7 @@ public class Demo {
             PatientRMPIEntity patientList = null; //client.sendData(patientInfo);
             HIENMPIAdapter adapter = new HIENMPIAdapter();
             RespondingGatewayPRPAIN201305UV02RequestType request = null;
-            adapter.FetchPatient(patientList, patientInfo);
+//            adapter.FetchPatient(patientList, patientInfo);
             
             // Testing that the singleton / static instance continues to work after the first run
             HIENPatientDiscoverySoapClient client2 =  HIENPatientDiscoverySoapClient.getInstance();
