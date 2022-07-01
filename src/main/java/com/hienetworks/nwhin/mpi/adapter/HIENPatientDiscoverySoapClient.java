@@ -2,6 +2,11 @@ package com.hienetworks.nwhin.mpi.adapter;
 
 import java.io.IOException;
 
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.ws.BindingProvider;
@@ -13,20 +18,26 @@ import gov.hhs.fha.nhinc.nhinclib.NhincConstants;
 import gov.hhs.fha.nhinc.properties.PropertyAccessException;
 import gov.hhs.fha.nhinc.properties.PropertyAccessor;
 
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.xml.datatype.DatatypeConfigurationException;
-
+/**
+ *
+ * @author auhl
+ */
 public class HIENPatientDiscoverySoapClient {
- 
-    public static String AuthToken = "";
-    public static String LocalHomeCommunityID = "";
-    
+
     private final static Resource pdWsdl = new DefaultResourceLoader()
                     .getResource("classpath:wsdl/RHINWebService1.wsdl");
     private final static int CONNECTION_TIMEOUT = 60000;
     private final static String CENTRALIS_AUTHENTICATION_TOKEN = "9DB9082B-68F3-4A7B-8B11-1BA0649945DE";
+        
+    /**
+     *
+     */
+    public static String AuthToken = "";
+
+    /**
+     *
+     */
+    public static String LocalHomeCommunityID = "";
     
     private static IRHINWebService pdPort;
     private static HIENPatientDiscoverySoapClient client = null;    
@@ -44,6 +55,10 @@ public class HIENPatientDiscoverySoapClient {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public static HIENPatientDiscoverySoapClient getInstance() {
         if(null == client) {
             client = new HIENPatientDiscoverySoapClient();
@@ -53,6 +68,13 @@ public class HIENPatientDiscoverySoapClient {
     
     // TODO: Determine whether we really need to use the below checked PostConstruct attribute.
     // @PostConstruct
+
+    /**
+     *
+     * @throws IOException
+     * @throws PropertyAccessException
+     * @throws MissingURLException
+     */
     public void init() throws IOException, PropertyAccessException, MissingURLException {
 
         // Get RESTful RHINWebService URL and Centralis application authentication token
@@ -94,6 +116,11 @@ public class HIENPatientDiscoverySoapClient {
         pdContext.put("com.sun.xml.internal.ws.request.timeout", CONNECTION_TIMEOUT);
     }
 
+    /**
+     *
+     * @param patientInfo
+     * @return
+     */
     public PatientRMPIEntity sendData(PatientInfo patientInfo) {		
         XMLGregorianCalendar dob = null;
         PatientRMPIEntity response = null;
@@ -120,7 +147,15 @@ public class HIENPatientDiscoverySoapClient {
         return response;
     }
        
+    /**
+     *
+     */
     public class MissingURLException extends Exception {
+
+        /**
+         *
+         * @param message
+         */
         public MissingURLException(String message) {
             super(message);
         }
