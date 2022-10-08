@@ -20,7 +20,7 @@ public class Demo {
 
            PatientInfo patientInfo = new PatientInfo();
 
-//         Note: Real/existing Patient from real repo                      
+//         Note: Real/existing Patient from real repository                    
 //            patientInfo.setLname("jones");
 //            patientInfo.setFname("curtis");
 //            patientInfo.setGender("M");
