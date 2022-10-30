@@ -2,6 +2,7 @@ package com.hienetworks.nwhin.mpi.adapter;
 
 // import com.hienetworks.nwhin.mpi.adapter;
 
+import org.hl7.v3.PRPAIN201305UV02MCCIMT000100UV01Message;
 import org.hl7.v3.RespondingGatewayPRPAIN201305UV02RequestType;
 
 // TODO:Refernces to auto gen'd code, so will be transient and likely need to be nixed
@@ -34,8 +35,13 @@ public class Demo {
             patientInfo.setDob("1983-10-17");
 
             PatientRMPIEntity patientList = null; //client.sendData(patientInfo);
-            HIENMPIAdapter adapter = new HIENMPIAdapter();
-            RespondingGatewayPRPAIN201305UV02RequestType request = null;
+            RespondingGatewayPRPAIN201305UV02RequestType request = new RespondingGatewayPRPAIN201305UV02RequestType();
+            PRPAIN201305UV02MCCIMT000100UV01Message oPRPAIN201305UV02 = new PRPAIN201305UV02MCCIMT000100UV01Message();
+//            oPRPAIN201305UV02.
+//            request.setPRPAIN201305UV02(value);
+            HIENMPIAdapter adapter = new HIENMPIAdapter();           
+            adapter.findCandidates(request);
+
 //            adapter.FetchPatient(patientList, patientInfo);
             
             // Testing that the singleton / static instance continues to work after the first run
