@@ -50,7 +50,6 @@ public class HIENPatientDiscoverySoapClient {
         try {
             init();
         } catch (IOException ei) {
-            logger.error( ei);
             logger.error(ei);
         } catch (PropertyAccessException ep) {
             logger.error( ep);

@@ -31,16 +31,17 @@ import gov.hhs.fha.nhinc.mpilib.PersonNames;
 import gov.hhs.fha.nhinc.nhinclib.NhincConstants;
 import gov.hhs.fha.nhinc.properties.PropertyAccessException;
 import gov.hhs.fha.nhinc.properties.PropertyAccessor;
-import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
 import java.util.logging.Level;
+import org.hl7.v3.CS;
 import org.hl7.v3.II;
+import org.hl7.v3.MFMIMT700711UV01QueryAck;
 
 /**
  * Patient Discovery (PD) / Master Patient Index (eMPI) CONNECT Adapter
  * <p>
- *  Find candidate patients ((PRPAIN201305UV02) as per the given PD request parameters  (lname, fname, ssn, .etc).
+ *  Find candidate patients ((PRPAIN201305UV02) as per the given PD request parameters (lname, fname, ssn, .etc).
  *  Package and Return candidate patients (PRPAIN201306UV02) 
  * @author Ekalavya-Wilmer, Sir Alan of Uhl
  */
@@ -51,7 +52,7 @@ public class HIENMPIAdapter implements gov.hhs.fha.nhinc.adaptercomponentmpi.Ada
     private WebServiceContext context;
     
     private static final Logger logger = Logger.getLogger(HIENMPIAdapter.class);
-    private PropertyAccessor propertyAccessor = PropertyAccessor.getInstance();
+    final private PropertyAccessor propertyAccessor = PropertyAccessor.getInstance();
     private String FilterSenders = "";
     private String FilterAllowStates = "";
     private String SenderHCID = null;
@@ -68,8 +69,8 @@ public class HIENMPIAdapter implements gov.hhs.fha.nhinc.adaptercomponentmpi.Ada
         PRPAIN201306UV02 oResponse = null;
         String fName = null;
         String lName = null;
-        String gender = null;
-        String dob = null;
+        String gender;
+        String dob;
         PatientInfo patientInfo = new PatientInfo();
             
         try {
@@ -86,9 +87,20 @@ public class HIENMPIAdapter implements gov.hhs.fha.nhinc.adaptercomponentmpi.Ada
             if (controlActProcess != null) {
                 PRPAMT201306UV02ParameterList parameterList = HL7Parser201305.extractHL7QueryParamsFromMessage(oPRPAIN201305UV02);
                 
+                
+                // ****************************************************************************************************
+                // Due to the sheer volume of some participant's network (e.g., Federal DoD/VA) traffic it overwhelms
+                // our ability to response to any participant kinda like a denial-of-service attach so will filter
+                // the traffic by physical location (at this point only)
+                // ****************************************************************************************************
                 if (runFilterRules(oPRPAIN201305UV02)) {
                 
+                    logger.info("Filter Rules Passed - Searching for Patient...");
+                    
                     if (parameterList != null) {
+                        
+                        logger.info("Parameter list supplied");
+                        
                         PersonName personName = HL7Parser201305.extractPersonName(parameterList);
                         if (personName != null) {
                             fName = personName.getFirstName();
@@ -114,8 +126,9 @@ public class HIENMPIAdapter implements gov.hhs.fha.nhinc.adaptercomponentmpi.Ada
                     long before = Instant.now().toEpochMilli();
 
                     //**************************************************************************************
-                    //SEND REQUEST to RHINWebService API
+                    // SEND REQUEST to RHINWebService API
                     //**************************************************************************************
+                    
                     HIENPatientDiscoverySoapClient client = HIENPatientDiscoverySoapClient.getInstance();
                     if (client != null) {
                         patientResponse = client.sendData(patientInfo);
@@ -183,27 +196,70 @@ public class HIENMPIAdapter implements gov.hhs.fha.nhinc.adaptercomponentmpi.Ada
 
                             patList.add(p);
                         } else {
-                            logger.error("Error sending PD: "+errorMsg);
+                            if (!("No patients returned".equals(errorMsg)))
+                                logger.warn("Warning: "+errorMsg);
                         }
+                        logger.info("Returned Patients: "+patList.size());
                         oResponse = HL7Parser201306.buildMessageFromMpiPatient(patList, oPRPAIN201305UV02);                        
 
                     } else {
-                        logger.info("no content from womba patientDiscovery api");
+                        logger.info("Null Patient Response - responding with empty list");
                         Patients patListempty = new Patients();
                         oResponse = HL7Parser201306.buildMessageFromMpiPatient(patListempty, oPRPAIN201305UV02);
                     }
                 } else {
-                    logger.info("no content from womba patientDiscovery api");
-                    Patients patListempty = new Patients();
-                    oResponse = HL7Parser201306.buildMessageFromMpiPatient(patListempty, oPRPAIN201305UV02);
+                    logger.info("FILTERED PATIENT");
+                    oResponse = buildMessageForFilteredPatientResponse(oPRPAIN201305UV02);
                 }
             }
         } catch (Exception exp) {
             logger.error(exp);
         }
         
-        logger.info("Returning Response: " + oResponse.getAcceptAckCode());
         return oResponse;
+    }
+    
+    /*
+    ************************************************************************************
+    Example/Sample PD ACK snippet showing the typeCode and queryResponseCode 'AE' values 
+    that are required for the VA filtration PD/ITI-55 responsesk
+    ************************************************************************************
+        <acknowledgement>
+            <typeId root="2.16.840.1.113883.1.6" extension="PRPA_IN201305UV02"/>
+            <typeCode code="AE"/>
+            <targetMessage>
+                <id root="1.3.6.1.4.1.12559.11.24.4.1.17.1" extension="12432"/>
+            </targetMessage>
+        </acknowledgement>
+        <controlActProcess classCode="CACT" moodCode="EVN">
+            <code code="PRPA_TE201306UV02" codeSystem="2.16.840.1.113883.1.6"/>
+            <queryAck>
+                <queryId root="1.3.6.1.4.1.12559.11.24.4.1.17.2" extension="12431"/>
+                <statusCode code="deliveredResponse"/>
+                <queryResponseCode code="AE"/>
+            </queryAck>
+    ****************************************************************************************
+    */
+    
+    private  PRPAIN201306UV02 buildMessageForFilteredPatientResponse(PRPAIN201305UV02 oPRPAIN201305UV02) {
+        PRPAIN201306UV02 response;
+        MFMIMT700711UV01QueryAck queryAck;
+        Patients patListempty = new Patients();
+
+        // Build Ack-status coded-string element
+        CS ackStatus = new CS();
+        ackStatus.setCode("AE");
+
+        // Build boiler-plate response
+        response = HL7Parser201306.buildMessageFromMpiPatient(patListempty, oPRPAIN201305UV02);        
+
+        // Update acknowledgement typeCode (see example above)
+        response.getAcknowledgement().get(0).setTypeCode(ackStatus);
+        
+        // Update controlActProcess queryAck (see example above)
+        response.getControlActProcess().getQueryAck().setQueryResponseCode(ackStatus);
+        
+        return response;
     }
 
     /**
@@ -224,25 +280,24 @@ public class HIENMPIAdapter implements gov.hhs.fha.nhinc.adaptercomponentmpi.Ada
              */
             loadFilterRules();
 
-            logger.info("Allowed Sender: " + FilterSenders);
-
-            /*
-             * Run BLACK-LIST FILTER BY SENDER
-             * Probably FL to begin with
-             */
+            logger.info("ACL Filter       : " + FilterSenders);
+            
+            // Extract Sender's HCID
             List<II> senderIDs = oPRPAIN201305UV02.getSender().getDevice().getId();       
             SenderHCID = senderIDs.get(0).getRoot();
-            logger.info("Request Sender: " + SenderHCID);
+            logger.info("Requesting Sender: " + SenderHCID);
+            
+            // If sender's HCID not in the senders-to-be-filtered list, then get the hell out
             if (!SenderHCID.equals(FilterSenders)) {
                 logger.info("Sender not in ACL");
                 return true;
             }
 
             /*
-             * Get PD Request Parameters (e.g., LName, FName, Address, etc.)
+             * Get PD Request Patient Demographics (e.g., LName, FName, Address, etc.)
              */
+            
             PRPAMT201306UV02ParameterList parameterList = HL7Parser201305.extractHL7QueryParamsFromMessage(oPRPAIN201305UV02);
-            logger.info("Examining Request Parameter List: "+parameterList);
 
             /*
              * Run WHITE-LIST FILTER BY STATES (comma separated list of allowable states)
@@ -250,12 +305,22 @@ public class HIENMPIAdapter implements gov.hhs.fha.nhinc.adaptercomponentmpi.Ada
              */
 
             if (!FilterAllowStates.isEmpty()) {
-                logger.info("State Filter Started: "+FilterAllowStates);
+                logger.info("ACL State Values: "+FilterAllowStates);
                 Address personAddress = HL7Parser201305.extractPersonAddress(parameterList);
+                
+                // If composit patient address not null, then evaluate against the ACL
                 if (null != personAddress) {
+                    
+                    // Extract patient US state of residence from composit address
                     String personState = personAddress.getState();
+                    logger.info("Patient State: "+personState);
+                    
+                    // Convert allowed states for given HCID list into a string array
                     FilterAllowStates+=":";
                     String[] filterAllowStates = FilterAllowStates.split(":");
+                    
+                    // Evaluate patient's state against each state string array member, 
+                    // could be either abbreviation or full state name
                     for(String filterAllowState : filterAllowStates) {
                         if (personState.equalsIgnoreCase(filterAllowState)) {
                             allowPassage = true;
@@ -263,13 +328,13 @@ public class HIENMPIAdapter implements gov.hhs.fha.nhinc.adaptercomponentmpi.Ada
                         }
                     }
                 }
-                logger.info("State Filter Completed: "+allowPassage);
+                logger.info("State Filter Completed");
             }
         } catch (Exception e) {
             logger.error("Filter Rule Error: "+e);
         }
         
-        logger.error("Filter Rules Completed: "+allowPassage);
+        logger.error("Filter Rules Completed - Allowing: "+allowPassage);
         
         return allowPassage;
     }
