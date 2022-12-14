@@ -220,16 +220,18 @@ public class HIENMPIAdapter implements gov.hhs.fha.nhinc.adaptercomponentmpi.Ada
                             //phoneNumbers.add(ph);
 
                             patList.add(p);
+                            
+                            logger.info("Returned Patients: "+patList.size());
+                            oResponse = HL7Parser201306.buildMessageFromMpiPatient(patList, oPRPAIN201305UV02);                        
+                            
                         } else {
                             if (!("No patients returned".equals(errorMsg)))
                                 logger.warn("Warning: "+errorMsg);
-                        }
-                        logger.info("Returned Patients: "+patList.size());
-                        oResponse = HL7Parser201306.buildMessageFromMpiPatient(patList, oPRPAIN201305UV02);                        
-
+                            oResponse = buildMessageForPatientNotFound(patList, oPRPAIN201305UV02);
+                        }                        
                     } else {
                         logger.info("Null Patient Response - responding with empty list");
-                        oResponse = HL7Parser201306.buildMessageFromMpiPatient(patList, oPRPAIN201305UV02);
+                        oResponse = buildMessageForPatientNotFound(patList, oPRPAIN201305UV02);
                     }
                 } else {
                     logger.info("FILTERED PATIENT");
@@ -239,6 +241,21 @@ public class HIENMPIAdapter implements gov.hhs.fha.nhinc.adaptercomponentmpi.Ada
         } catch (Exception exp) {
             logger.error(exp);
         }
+        
+        return oResponse;
+    }
+
+    private PRPAIN201306UV02 buildMessageForPatientNotFound(final Patients patList, PRPAIN201305UV02 oPRPAIN201305UV02) {
+        PRPAIN201306UV02 oResponse;
+
+        oResponse = HL7Parser201306.buildMessageFromMpiPatient(patList, oPRPAIN201305UV02);
+
+        // Build Ack-status coded-string element
+        CS ackStatus = new CS();
+        ackStatus.setCode("NF");
+
+        // Update controlActProcess queryAck (see example above)
+        oResponse.getControlActProcess().getQueryAck().setQueryResponseCode(ackStatus);
         
         return oResponse;
     }
